@@ -1,0 +1,34 @@
+pdf文件在web项目中展示
+	1、导入pdfjs
+	2、示例：layer.open({
+	  			title: 'PDF预览',
+	  			area:['95%','95%'],
+	  			content: "<iframe id='pdfcontent' src='<%=basePath%>js/pdfjs/web/viewer.html?file=<%=basePath%>"+bdhm+".pdf' width='100%' height='100%' frameborder='no' scrolling='no'></iframe>"
+			});
+		读取本地路径下实际存在的文件。
+	3、java：-- 将流对象存储为本地文件
+		String realpath=ServletActionContext.getServletContext().getRealPath("/");
+		is = new ByteArrayInputStream(
+								new Base64().decode(subString(rep_xz,
+										"<DOWNLOAD_URL>", "</DOWNLOAD_URL>")
+										.getBytes("ISO-8859-1"))); // is为pdf流对象
+						
+		CommonConstant.LOGGER.info("PDF下载成功");
+		
+		bin=new BufferedInputStream(is);
+		
+		String fileName=realpath+XSF_BILLNO+".pdf";
+        //指定输出的文件
+        File file =new File(fileName);
+        //创建到指定文件的输出流
+        fout=new FileOutputStream(file);
+        //为文件输出流对接缓存输出流对象
+        bout=new BufferedOutputStream(fout);
+        byte[] buffers=new byte[1024];
+        int len=bin.read(buffers);
+        while (len!=-1) {
+            bout.write(buffers, 0, len);
+            len=bin.read(buffers);
+        }
+        //刷新输出流并强制写出所有的缓存的输出字节
+        bout.flush();
